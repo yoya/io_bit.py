@@ -95,7 +95,8 @@ class IO_Bit :
             data_len = len(self._data)
             offset = self._byte_offset
             raise Exception("getUI8: %d < %d + 1" % (data_len, offset))
-        value = ord(self._data[self._byte_offset])
+        # if python3 only, that value = self._data[self._byte_offset]
+        value = ord(self._data[self._byte_offset:self._byte_offset+1])
         self._byte_offset += 1
         return value
     
@@ -168,9 +169,8 @@ class IO_Bit :
     
     def getSI64LE(self):
         value = self.getUI64LE()
-	if value >= 0x8000000000000000: 
-	  value = 0x7fffffffffffffff - value
-	
+        if value >= 0x8000000000000000: 
+            value = 0x7fffffffffffffff - value
         return value
     
 
