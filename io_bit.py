@@ -73,11 +73,11 @@ class IO_Bit :
     
     def getDataUntil(self, delimiter):
         self.byteAlign()
-        if (delimiter == False) or (delimiter == None):
+        if (delimiter is False) or (delimiter is None):
             pos = False
         else:
             pos = strpos(self._data, delimiter, self._byte_offset)
-        if pos == False: 
+        if pos is False: 
             length = len(self._data) - self._byte_offset
             delim_len = 0
         else:
@@ -246,7 +246,7 @@ class IO_Bit :
       """
     def putData(self, data, data_len = None, pad_string = "\0"):
         self.byteAlign()
-        if data_len == None:
+        if data_len is None:
             self._data += data
             self._byte_offset += len(data)
         else:
@@ -305,7 +305,7 @@ class IO_Bit :
         return self.putUI32LE(value) # XXX
     
     def _allocData(self, need_data_len = None):
-        if (need_data_len == None):
+        if (need_data_len is None):
             need_data_len = self._byte_offset
         data_len = len(self._data)
         if data_len < need_data_len: 
@@ -330,7 +330,7 @@ class IO_Bit :
             width -= 1
             bit = (value >> width) & 1
             ret = self.putUIBit(bit)
-            if ret != True: 
+            if not ret is True: 
                 return ret
         return True
     
@@ -360,7 +360,7 @@ class IO_Bit :
         while (i < width):   # LSB(Bit) order
             bit = (value >> i) & 1
             ret = self.putUIBit(bit)
-            if ret != True: 
+            if not ret is True: 
                 return ret
             i -= 1
         return True
@@ -452,7 +452,7 @@ class IO_Bit :
             i += 1
         i = offset
         while i < (offset + length):
-            if ( not  (limit == None) and (i >= offset + limit)):
+            if ( not  (limit is None) and (i >= offset + limit)):
                 break
             if (i % 0x10 == 0):
                 printf("0x%08x  ", i)
@@ -483,5 +483,5 @@ class IO_Bit :
             print " "
             print dump_str
             print PHP_EOL
-        if ( not  (limit == None) and (i >= offset + limit)):
+        if ( not  (limit is None) and (i >= offset + limit)):
             print "...(truncated)...".PHP_EOL
