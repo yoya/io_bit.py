@@ -1,6 +1,7 @@
 #  2010/07/28- (c) yoya@awm.jp
 
 import struct
+import sys
 
 class IO_Bit :
 
@@ -435,53 +436,53 @@ class IO_Bit :
     """ 
       general purpose hexdump routine
       """
-    def hexdump(self, offset, length, limit = None):
-        printf("             0  1  2  3  4  5  6  7   8  9  a  b  c  d  e  f  0123456789abcdef\n")
+    def hexdump(self, offset, length, limit = None, fp = sys.stdout):
+        fp.write("             0  1  2  3  4  5  6  7   8  9  a  b  c  d  e  f  0123456789abcdef\n")
         dump_str = ''
         if offset % 0x10: 
-            printf("0x%08x ", offset - (offset % 0x10))
+            fp.write("0x{:08x} ".format(offset - (offset % 0x10)))
             dump_str = str_pad(' ', offset % 0x10)
         i = 0
         while i < offset % 0x10:
             if i == 0: 
-                print(' ')
+                fp.write(' ')
             if i == 8: 
-                print(' ')
+                fp.write(' ')
             
-            print('   ')
+            fp.write('   ')
             i += 1
         i = offset
         while i < (offset + length):
             if ( not  (limit is None) and (i >= offset + limit)):
                 break
             if (i % 0x10 == 0):
-                printf("0x%08x  ", i)
+                fp.write("0x{:08x}  ".format(i))
             if i%0x10 == 8: 
-                print(' ')
+                fp.write(' ')
             if i < len(self._data): 
                 chr = self._datai
                 value = ord(chr)
-                if (0x20 < value) and (value < 0x7f):  # XXX: printable
+                if (0x20 < value) and (value < 0x7f):  # XXX: fp.writeable
                     dump_str += chr
                 else:
                     dump_str += ' '
-                printf("%02x ", value)
+                fp.write("{:02x} ".format(value))
             else:
                 dump_str += ' '
-                print '   '
+                fp.write('   ')
             if (i % 0x10) == 0x0f:
-                print " "
-                print dump_str
-                print PHP_EOL
+                fp.write(" ")
+                fp.write(dump_str)
+                fp.write("\n")
                 dump_str = ''
             i += 1
         
         if (i % 0x10) != 0:
-            print str_pad(' ', 3  (0x10 - (i % 0x10)))
+            fp.write(str_pad(' ', 3  (0x10 - (i % 0x10))))
             if i < 8: 
-                print ' '
-            print " "
-            print dump_str
-            print PHP_EOL
+                fp.write(' ')
+            fp.write(" ")
+            fp.write(dump_str)
+            fp.write("\n")
         if ( not  (limit is None) and (i >= offset + limit)):
-            print "...(truncated)...".PHP_EOL
+            fp.write("...(truncated)...\n")
