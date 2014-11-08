@@ -2,7 +2,7 @@
 
 import struct
 import sys
-
+from pprint import pprint
 class IO_Bit :
 
     """ 
@@ -438,10 +438,10 @@ class IO_Bit :
       """
     def hexdump(self, offset, length, limit = None, fp = sys.stdout):
         fp.write("             0  1  2  3  4  5  6  7   8  9  a  b  c  d  e  f  0123456789abcdef\n")
-        dump_str = ''
+        dump_str = b''
         if offset % 0x10: 
             fp.write("0x{:08x} ".format(offset - (offset % 0x10)))
-            dump_str = ' ' * (offset % 0x10)
+            dump_str = b' ' * (offset % 0x10)
         i = 0
         while i < offset % 0x10:
             if i == 0: 
@@ -465,16 +465,16 @@ class IO_Bit :
                 if (0x20 < value) and (value < 0x7f):  # XXX: fp.writeable
                     dump_str += chr
                 else:
-                    dump_str += ' '
+                    dump_str += b' '
                 fp.write("{:02x} ".format(value))
             else:
-                dump_str += ' '
+                dump_str += b' '
                 fp.write('   ')
             if (i % 0x10) == 0x0f:
                 fp.write(" ")
-                fp.write(dump_str)
+                fp.write(str(dump_str))
                 fp.write("\n")
-                dump_str = ''
+                dump_str = b''
             i += 1
         
         if (i % 0x10) != 0:
@@ -482,7 +482,7 @@ class IO_Bit :
             if i < 8: 
                 fp.write(' ')
             fp.write(" ")
-            fp.write(dump_str)
+            fp.write(str(dump_str))
             fp.write("\n")
         if ( not  (limit is None) and (i >= offset + limit)):
             fp.write("...(truncated)...\n")
