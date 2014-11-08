@@ -255,7 +255,7 @@ class IO_Bit :
             if len == data_len: 
                 self._data += data
             elif len < data_len:
-                self._data += str_pad(data, data_len, pad_string)
+                self._data += data.rjust(data_len, pad_string)
             else:
                 self._data += data[0: data_len]
             
@@ -310,7 +310,7 @@ class IO_Bit :
             need_data_len = self._byte_offset
         data_len = len(self._data)
         if data_len < need_data_len: 
-            self._data += str_pad(chr(0), need_data_len - data_len)
+            self._data.ljust(need_data_len - data_len , chr(0))
         return True
 
     # start with the MSB(most-significant bit)
@@ -441,7 +441,7 @@ class IO_Bit :
         dump_str = ''
         if offset % 0x10: 
             fp.write("0x{:08x} ".format(offset - (offset % 0x10)))
-            dump_str = str_pad(' ', offset % 0x10)
+            dump_str = ' ' * (offset % 0x10)
         i = 0
         while i < offset % 0x10:
             if i == 0: 
@@ -460,7 +460,7 @@ class IO_Bit :
             if i%0x10 == 8: 
                 fp.write(' ')
             if i < len(self._data): 
-                chr = self._datai
+                chr = self._data[i:i+1]
                 value = ord(chr)
                 if (0x20 < value) and (value < 0x7f):  # XXX: fp.writeable
                     dump_str += chr
@@ -478,7 +478,7 @@ class IO_Bit :
             i += 1
         
         if (i % 0x10) != 0:
-            fp.write(str_pad(' ', 3  (0x10 - (i % 0x10))))
+            fp.write('' * ( 3 * (0x10 - (i % 0x10))))
             if i < 8: 
                 fp.write(' ')
             fp.write(" ")
